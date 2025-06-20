@@ -8,16 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllAr
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;gsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Data;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Sessions {
     
     @Id
