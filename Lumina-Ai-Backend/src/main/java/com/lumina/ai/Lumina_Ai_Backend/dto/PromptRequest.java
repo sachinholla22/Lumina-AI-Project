@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PromptRequest {
-    private String prompt;
+    private String input;
 }

@@ -30,14 +30,14 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token){
         try {
-            Jwts.parserBuilder().setSigningKey(secretKeySpec()).build().parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKeySpec()).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
         public String extractUserId(String token){
-            return Jwts.parserBuilder().setSigningKey(secretKeySpec()).build()
+            return Jwts.parser().setSigningKey(secretKeySpec()).build()
                        .parseClaimsJws(token).getBody().getSubject();
         }
     

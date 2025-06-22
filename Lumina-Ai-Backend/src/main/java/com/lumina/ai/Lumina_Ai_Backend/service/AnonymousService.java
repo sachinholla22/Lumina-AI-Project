@@ -1,5 +1,9 @@
 package com.lumina.ai.Lumina_Ai_Backend.service;
 
+import java.net.http.HttpHeaders;
+
+import org.apache.tomcat.util.http.parser.MediaType;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,7 +14,7 @@ import com.lumina.ai.Lumina_Ai_Backend.dto.PromptResponse;
 public class AnonymousService {
     
     private final RestTemplate restTemplate;
-    private final String aiServieUrl="http://localhost:5000/api/prompt";
+    private final String aiServiceUrl="http://localhost:5000/q";
 
 
     public AnonymousService(RestTemplate restTemplate){
@@ -21,8 +25,8 @@ public class AnonymousService {
             throw new IllegalArgumentException("Prompt Cannot be empty");
         }
         PromptRequest request=new PromptRequest();
-        request.setPrompt(prompt);
-        PromptResponse response=restTemplate.postForObject(aiServieUrl,request,PromptResponse.class);
+        request.setInput(prompt);
+        PromptResponse response=restTemplate.postForObject(aiServiceUrl,request,PromptResponse.class);
         return response;
     }
 
