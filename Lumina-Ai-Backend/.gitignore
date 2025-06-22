@@ -1,37 +1,30 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Gradle
+/build/
+/.gradle/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IntelliJ IDEA
 *.iml
-*.ipr
+.idea/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-
+# Logs
 *.log
-.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Sensitive configs
+src/main/resources/application.properties
+src/main/resources/application.yml
+.env
+
+# Optional: JAR/WAR files
+*.jar
+*.war
