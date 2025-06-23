@@ -40,6 +40,8 @@ public class Chats {
     @Column(columnDefinition = "TEXT")
     private String response;
 
+    private boolean isResearchRelated;
+    
     @Column(name="created_at",nullable=false)
     private LocalDateTime createdAt=LocalDateTime.now();
 }
