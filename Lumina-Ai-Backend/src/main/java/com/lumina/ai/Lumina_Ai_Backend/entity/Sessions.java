@@ -34,6 +34,7 @@ public class Sessions {
     private Users user;
 
     @NotNull
+    @Size(min=1, max=100, message="Session name must be between 1 and 100 characters")
     private String sessionName;
     private LocalDateTime createdAt=LocalDateTime.now();
     private LocalDateTime lastUpdated = LocalDateTime.now();
