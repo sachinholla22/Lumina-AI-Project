@@ -1,5 +1,8 @@
 package com.lumina.ai.Lumina_Ai_Backend.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +54,7 @@ public class AuthService {
         if(session==null){
             session=new Sessions();
             session.setUser(user);
-            session.setSessionName("Default Session");
+            session.setSessionName("Session_"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")));
             session.setStatus(Sessions.Status.ACTIVE);
             sessionRepo.save(session);
 
