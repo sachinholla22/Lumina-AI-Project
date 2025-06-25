@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 import com.lumina.ai.Lumina_Ai_Backend.entity.Chats;
 
@@ -16,5 +17,5 @@ public interface ChatRepository  extends JpaRepository<Chats,Long> {
                    "JOIN sessions s ON c.session_id = s.id " +
                    "WHERE s.user_id = :userId " +
                    "ORDER BY c.created_at DESC",nativeQuery=true)
-                   List<Chats> findChatsByUserId(@Param("userId")Long userId);
+                  Optional<List<Chats>> findChatsByUserId(@Param("userId")Long userId);
 }

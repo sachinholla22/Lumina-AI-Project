@@ -3,6 +3,7 @@ package com.lumina.ai.Lumina_Ai_Backend.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.el.stream.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,7 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        Sessions session=sessionRepo.findByUserIdAndStatus(user.getId(),Sessions.Status.ACTIVE);
+        Sessions session=sessionRepo.findByUserIdAndStatus(user.getId(),Sessions.Status.ACTIVE).orElse(null);
         if(session==null){
             session=new Sessions();
             session.setUser(user);

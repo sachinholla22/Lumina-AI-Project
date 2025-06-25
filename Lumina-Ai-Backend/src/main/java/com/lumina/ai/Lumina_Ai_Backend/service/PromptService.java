@@ -5,6 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.util.List;
+import java.util.Optional;
 
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.PromptRequest;
@@ -34,7 +36,7 @@ this.template=template;
         throw new IllegalArgumentException("Prompt cannot be Empty");
     }
 
-    Sessions session=sessionRepo.findByUserIdAndStatus(Long.valueOf(userId),Sessions.Status.ACTIVE);
+    Sessions session=sessionRepo.findByUserIdAndStatus(Long.valueOf(userId),Sessions.Status.ACTIVE).orElse(null);
                    // .orElseThrow(()->new IllegalArgumentException("No Active Session Found"));
 
     HttpHeaders header=new HttpHeaders();
@@ -55,8 +57,6 @@ this.template=template;
     chatRepo.save(chat);
 
     return response;
-
-    
 
     }
 }

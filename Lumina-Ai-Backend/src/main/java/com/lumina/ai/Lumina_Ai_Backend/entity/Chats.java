@@ -36,7 +36,6 @@ public class Chats {
     private Sessions session;
 
     
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String response;
 

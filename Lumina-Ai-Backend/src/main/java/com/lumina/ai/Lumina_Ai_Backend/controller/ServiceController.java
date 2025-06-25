@@ -1,8 +1,12 @@
 package com.lumina.ai.Lumina_Ai_Backend.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.lumina.ai.Lumina_Ai_Backend.entity.Sessions;
+import com.lumina.ai.Lumina_Ai_Backend.service.SessionService;
 import com.lumina.ai.Lumina_Ai_Backend.util.JwtUtil;
 @RestController
 @RequestMapping("/api/sessions")
