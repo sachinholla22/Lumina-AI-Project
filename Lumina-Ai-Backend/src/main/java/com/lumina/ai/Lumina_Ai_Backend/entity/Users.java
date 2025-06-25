@@ -2,8 +2,6 @@ package com.lumina.ai.Lumina_Ai_Backend.entity;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
