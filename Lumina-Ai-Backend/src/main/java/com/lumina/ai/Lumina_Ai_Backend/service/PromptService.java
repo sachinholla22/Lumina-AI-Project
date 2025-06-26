@@ -52,11 +52,17 @@ this.template=template;
 
     Chats chat=new Chats();
     chat.setSession(session);
-    chat.setInput(input);
+    chat.setInput(request.getInput());
     chat.setResponse(response.getResponse());
     chatRepo.save(chat);
 
-    return response;
+ return new PromptResponse(
+    request.getInput(),
+    response.getResponse(),
+    response.getTimestamp(),
+    response.getFeedback(),
+    response.isResearchRelated()
+ );
 
     }
 }
