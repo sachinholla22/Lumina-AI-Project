@@ -5,6 +5,9 @@ import com.lumina.ai.Lumina_Ai_Backend.entity.Sessions;
 import com.lumina.ai.Lumina_Ai_Backend.entity.Users;
 import com.lumina.ai.Lumina_Ai_Backend.repo.SessionRepository;
 import com.lumina.ai.Lumina_Ai_Backend.repo.UserRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
