@@ -17,10 +17,8 @@ public class ChatResponse {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+   
     private String input;
-    @Lob
+   
     private String response;
-    private LocalDateTime createdAt;
-    private Long sessionId;
 }

@@ -18,4 +18,6 @@ public interface ChatRepository  extends JpaRepository<Chats,Long> {
                    "WHERE s.user_id = :userId " +
                    "ORDER BY c.created_at DESC",nativeQuery=true)
                   Optional<List<Chats>> findChatsByUserId(@Param("userId")Long userId);
+
+                  List<Chats> findBySessionId(Long sessionId); 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.lumina.ai.Lumina_Ai_Backend.dto.ChatResponse;
 import com.lumina.ai.Lumina_Ai_Backend.entity.Chats;
 import com.lumina.ai.Lumina_Ai_Backend.repo.ChatRepository;
+import com.lumina.ai.Lumina_Ai_Backend.repo.SessionRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +17,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatService {
     
     private final ChatRepository chatRepository;
-
-    public ChatService(ChatRepository chatRepository) {
+    private final SessionRepository sessionRepo;
+    public ChatService(ChatRepository chatRepository,SessionRepository sessionRepo) {
         this.chatRepository = chatRepository;
+        this.sessionRepo = sessionRepo;
     }
 @Transactional(readOnly = true)
     public Optional<List<ChatResponse>> getChatHistory(String userId){
         Optional<List<Chats>>chats = chatRepository.findChatsByUserId(Long.valueOf(userId));
       return chats.map(chatList -> chatList.stream()
                 .map(chat -> new ChatResponse(
-                        chat.getId(),
+                       
                         chat.getInput(),
-                        chat.getResponse(),
-                        chat.getCreatedAt(),
-                        chat.getSession().getId()))
+                        chat.getResponse()))
                 .collect(Collectors.toList()));
+    }
+
+
+    @Transactional(readOnly=true)
+    public List<ChatResponse> getChatsBySessions(Long userId,Long sessionId){
+    sessionRepo.findByIdAndUserId(sessionId,userId).orElseThrow(()->new IllegalArgumentException("No session available"));
+
+    List<Chats> chats=chatRepository.findBySessionId(sessionId);
+    return chats.stream().map(chat->new ChatResponse(
+      
+        chat.getInput(),
+        chat.getResponse()))
+        .collect(Collectors.toList());
+    
     }
 }
