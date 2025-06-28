@@ -2,6 +2,7 @@ package com.lumina.ai.Lumina_Ai_Backend.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +30,10 @@ private Long id;
 private String email;
 private String password;
 private String name;
+
+@Column(unique=true)
+private String googleId;
+
 private String loginType;
 private LocalDateTime createdAt = LocalDateTime.now();
 

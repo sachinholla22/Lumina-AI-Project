@@ -5,6 +5,10 @@ import java.time.format.DateTimeFormatter;
 
 import org.apache.el.stream.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
@@ -30,6 +34,7 @@ public class AuthService {
         this.jwtutil=jwtutil;
         this.passwordEncoder=passwordEncoder;
         this.sessionRepo=sessionRepo;
+      
     }
 
     public AuthResponse registerRequest(AuthRequest request){
@@ -62,5 +67,34 @@ public class AuthService {
         }
         String jwt = jwtutil.generateToken(user.getId().toString());
         return new AuthResponse(jwt, user.getId().toString());
+    }
+
+    public AuthResponse handleGoogleLogin(OAuth2AuthenticationToken authentication){
+
+        String googleId=authentication.getPrincipal().getAttribute("sub");
+        String email=authentication.getPrincipal().getAttribute("email");
+
+        Users user = repo.findByGoogleId(googleId)
+                .orElseGet(() -> {
+                    Users newUser = new Users();
+                    newUser.setEmail(email);
+                    newUser.setGoogleId(googleId);
+                    return repo.save(newUser);
+                });
+
+        Sessions session=new Sessions();
+        session.setUser(user);   
+        session.setSessionName("Google_Login_"+LocalDateTime.now());
+        session.setStatus(Sessions.Status.ACTIVE);
+        sessionRepo.save(session);
+
+
+
+        String jwt = jwtutil.generateToken(user.getId().toString());
+        return new AuthResponse(jwt, user.getId().toString());
+
+
+
+        
     }
 }

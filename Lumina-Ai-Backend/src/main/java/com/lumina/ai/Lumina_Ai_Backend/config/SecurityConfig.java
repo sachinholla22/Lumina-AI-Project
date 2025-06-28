@@ -27,9 +27,10 @@ public class SecurityConfig {
         http
           
             .csrf().disable()
-            .authorizeHttpRequests(req->req.requestMatchers("/api/anonymous/**","/api/auth/register","/api/auth/login").permitAll()
+            .authorizeHttpRequests(req->req.requestMatchers("/api/anonymous/**","/api/auth/register","/api/auth/login","/login/oauth2/code/google").permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .anyRequest().authenticated())
+            .oauth2Login(auth->auth.defaultSuccessUrl("/api/auth/google/success",true).failureUrl("/api/auth/google/failure"))
             .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
             return http.build();
