@@ -63,4 +63,21 @@ for (Sessions session : activeSessions) {
             return Optional.empty();
         }
     }
+
+
+    @Transactional(readOnly=true)
+    public void updateSessionStatus(Long userId,Long sessionId, Sessions.Status status){
+        Sessions session=sessionRepo.findByIdAndUserId(sessionId,userId).orElseThrow(()->new IllegalArgumentException("No session Available for this user"));
+
+        session.setStatus(status);
+        sessionRepo.save(session);
+
+    }
+
+    @Transactional
+    public void deleteSession(Long userId, Long sessionId) {
+        Sessions session = sessionRepo.findByIdAndUserId(sessionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Session not found or unauthorized"));
+        sessionRepo.delete(session);
+    }
 }

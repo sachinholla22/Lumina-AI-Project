@@ -20,4 +20,6 @@ public interface ChatRepository  extends JpaRepository<Chats,Long> {
                   Optional<List<Chats>> findChatsByUserId(@Param("userId")Long userId);
 
                   List<Chats> findBySessionId(Long sessionId); 
+
+    void deleteByIdAndSessionUserId(Long chatId,Long userId);             
 }
