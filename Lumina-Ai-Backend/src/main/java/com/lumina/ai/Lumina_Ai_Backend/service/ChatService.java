@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.lumina.ai.Lumina_Ai_Backend.Exception.ResourceNotFoundException;
 import com.lumina.ai.Lumina_Ai_Backend.dto.ChatResponse;
 import com.lumina.ai.Lumina_Ai_Backend.entity.Chats;
 import com.lumina.ai.Lumina_Ai_Backend.repo.ChatRepository;
@@ -45,5 +46,25 @@ public class ChatService {
         chat.getResponse()))
         .collect(Collectors.toList());
     
+    }
+
+    @Transactional
+    public void deleteChat(Long userId, Long chatId) {
+        chatRepository.deleteByIdAndSessionUserId(chatId, userId);
+    }
+
+
+@Transactional
+    public void updateChat(Long userId, Long chatId, String userPrompt, Boolean isResearchRelated) {
+        Chats chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chat not found"));
+        if (!chat.getSession().getUser().getId().equals(userId)) {
+            throw new ResourceNotFoundException("Unauthorized to update chat");
+        }
+        if (userPrompt != null && !userPrompt.isBlank()) {
+            chat.setInput(userPrompt);
+        }
+       
+        chatRepository.save(chat);
     }
 }
