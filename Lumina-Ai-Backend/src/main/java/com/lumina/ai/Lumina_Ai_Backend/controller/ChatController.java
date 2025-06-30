@@ -1,3 +1,4 @@
+package com.lumina.ai.Lumina_Ai_Backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class ChatController{
     ){
 String jwt = authHeader.replace("Bearer ", "");
         Long userId = Long.valueOf(jwtUtil.extractUserId(jwt));
-        chatService.updateChat(userId, chatId, request.getUserPrompt());
+        chatService.updateChat(userId,chatId, request.getUserPrompt());
         return ResponseEntity.ok("Chat updated");
     }
 }
