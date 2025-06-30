@@ -19,6 +19,8 @@ import com.lumina.ai.Lumina_Ai_Backend.repo.SessionRepository;
 import com.lumina.ai.Lumina_Ai_Backend.repo.UserRepository;
 import com.lumina.ai.Lumina_Ai_Backend.util.JwtUtil;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AuthService {
     
@@ -37,9 +39,15 @@ public class AuthService {
       
     }
 
+    @Transactional
     public AuthResponse registerRequest(AuthRequest request){
+
+        String email=request.getEmail().toLowerCase();
+        if(repo.findByEmail(email).isPresent()){
+            throw new IllegalArgumentException("Email already Exists");
+        }
         Users user=new Users();
-        user.setEmail(request.getEmail());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setLoginType("manual");
         user=repo.save(user);
@@ -47,9 +55,10 @@ public class AuthService {
 
     }
 
-
+    @Transactional
     public AuthResponse loginRequest(AuthRequest request){
-        Users user=repo.findByEmail(request.getEmail())
+        String email=request.getEmail().toLowerCase();
+        Users user=repo.findByEmail(email)
         .orElseThrow(()->new IllegalArgumentException("Invalid Email or Password"));
 
         if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
@@ -69,18 +78,31 @@ public class AuthService {
         return new AuthResponse(jwt, user.getId().toString());
     }
 
+    @Transactional
     public AuthResponse handleGoogleLogin(OAuth2AuthenticationToken authentication){
 
         String googleId=authentication.getPrincipal().getAttribute("sub");
         String email=authentication.getPrincipal().getAttribute("email");
+        Boolean verifiedEmail= authentication.getPrincipal().getAttribute("verified_email");
 
-        Users user = repo.findByGoogleId(googleId)
-                .orElseGet(() -> {
-                    Users newUser = new Users();
-                    newUser.setEmail(email);
-                    newUser.setGoogleId(googleId);
-                    return repo.save(newUser);
-                });
+        if(email==null || googleId==null || !Boolean.TRUE.equals(verifiedEmail)){
+            throw new IllegalArgumentException("Invalid Google login: Missing or unverified email");
+        }
+        String normalizedEmail = email.toLowerCase();
+        Users user=repo.findByEmail(normalizedEmail)
+        .orElseGet(()->{
+            Users newUser=new Users();
+         newUser.setEmail(normalizedEmail);
+         newUser.setGoogleId(googleId);
+         newUser.setLoginType("Google_Login");
+         return repo.save(newUser);
+        });
+if (user.getGoogleId() == null) {
+        user.setGoogleId(googleId);
+        user.setLoginType("Google_Login");
+        repo.save(user);
+    }
+    
 
         Sessions session=new Sessions();
         session.setUser(user);   

@@ -55,7 +55,7 @@ public class ChatService {
 
 
 @Transactional
-    public void updateChat(Long userId, Long chatId, String userPrompt, Boolean isResearchRelated) {
+    public void updateChat(Long userId, Long chatId, String userPrompt) {
         Chats chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ResourceNotFoundException("Chat not found"));
         if (!chat.getSession().getUser().getId().equals(userId)) {

@@ -28,9 +28,4 @@ this.service=service;
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/prompt")
-    public String getString(){
-        return "im testing here";
-    }
-  
 }
