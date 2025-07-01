@@ -2,6 +2,7 @@ package com.lumina.ai.Lumina_Ai_Backend.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.apache.el.stream.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.lumina.ai.Lumina_Ai_Backend.Exception.ResourceNotFoundException;
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthResponse;
 import com.lumina.ai.Lumina_Ai_Backend.entity.Sessions;
@@ -65,15 +67,18 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        Sessions session=sessionRepo.findByUserIdAndStatus(user.getId(),Sessions.Status.ACTIVE).orElse(null);
-        if(session==null){
-            session=new Sessions();
-            session.setUser(user);
-            session.setSessionName("Session_"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")));
-            session.setStatus(Sessions.Status.ACTIVE);
+       // Deactivate existing active sessions
+        List<Sessions> activeSessions = sessionRepo.findByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE);
+        activeSessions.forEach(session -> {
+            session.setStatus(Sessions.Status.INACTIVE);
             sessionRepo.save(session);
-
-        }
+        });
+        // Create new session
+        Sessions session = new Sessions();
+        session.setUser(user);
+        session.setSessionName("Session_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")));
+        session.setStatus(Sessions.Status.ACTIVE);
+        sessionRepo.save(session);
         String jwt = jwtutil.generateToken(user.getId().toString());
         return new AuthResponse(jwt, user.getId().toString());
     }
@@ -85,7 +90,7 @@ public class AuthService {
         String email=authentication.getPrincipal().getAttribute("email");
         Boolean verifiedEmail= authentication.getPrincipal().getAttribute("verified_email");
 
-        if(email==null || googleId==null || !Boolean.TRUE.equals(verifiedEmail)){
+        if(email==null || googleId==null){
             throw new IllegalArgumentException("Invalid Google login: Missing or unverified email");
         }
         String normalizedEmail = email.toLowerCase();
@@ -102,7 +107,11 @@ if (user.getGoogleId() == null) {
         user.setLoginType("Google_Login");
         repo.save(user);
     }
-    
+    sessionRepo.findByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE)
+            .forEach(session -> {
+                session.setStatus(Sessions.Status.INACTIVE);
+                sessionRepo.save(session);
+            });
 
         Sessions session=new Sessions();
         session.setUser(user);   
@@ -114,9 +123,24 @@ if (user.getGoogleId() == null) {
 
         String jwt = jwtutil.generateToken(user.getId().toString());
         return new AuthResponse(jwt, user.getId().toString());
-
-
-
         
+    }
+
+    @Transactional
+    public void setPassword(String jwt,String password){
+     Long userId = Long.valueOf(jwtutil.extractUserId(jwt));
+        String email = jwtutil.extractEmail(jwt).toLowerCase();
+
+        Users user = repo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!user.getId().equals(userId)) {
+            throw new IllegalArgumentException("Unauthorized");
+        }
+
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
+        user.setPassword(passwordEncoder.encode(password));
+        repo.save(user);
     }
 }
