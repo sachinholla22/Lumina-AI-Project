@@ -68,7 +68,7 @@ public class AuthService {
         }
 
        // Deactivate existing active sessions
-        List<Sessions> activeSessions = sessionRepo.findByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE);
+       List<Sessions> activeSessions = sessionRepo.findAllByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE);
         activeSessions.forEach(session -> {
             session.setStatus(Sessions.Status.INACTIVE);
             sessionRepo.save(session);
