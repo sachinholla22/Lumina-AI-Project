@@ -107,7 +107,7 @@ if (user.getGoogleId() == null) {
         user.setLoginType("Google_Login");
         repo.save(user);
     }
-    sessionRepo.findByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE)
+    sessionRepo.findAllByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE)
             .forEach(session -> {
                 session.setStatus(Sessions.Status.INACTIVE);
                 sessionRepo.save(session);
@@ -129,7 +129,7 @@ if (user.getGoogleId() == null) {
     @Transactional
     public void setPassword(String jwt,String password){
      Long userId = Long.valueOf(jwtutil.extractUserId(jwt));
-        String email = jwtutil.extractEmail(jwt).toLowerCase();
+       
 
         Users user = repo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
