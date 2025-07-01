@@ -6,12 +6,14 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthResponse;
+import com.lumina.ai.Lumina_Ai_Backend.dto.SetPasswordRequest;
 import com.lumina.ai.Lumina_Ai_Backend.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -37,13 +39,6 @@ public class AuthController {
         return ResponseEntity.ok(service.loginRequest(request));
     }
 
-
-    @GetMapping("/register")
-    public String check(){
-        return "checking";
-    }
-
-
     @GetMapping("/google/success")
     public ResponseEntity<AuthResponse> googleLoginSuccess(OAuth2AuthenticationToken authentication){
 if (!"google".equals(authentication.getAuthorizedClientRegistrationId())) {
@@ -55,6 +50,18 @@ if (!"google".equals(authentication.getAuthorizedClientRegistrationId())) {
     @GetMapping("/google/failure")
     public ResponseEntity<String> googleLoginFailure() {
         return ResponseEntity.status(401).body("Google login failed");
+    }
+
+
+    @PostMapping("/setpassword")
+    public ResponseEntity<String> setPassword(@RequestBody SetPasswordRequest request, @RequestHeader("Authorization")String authHead){
+        try {
+            String jwt = authHead.replace("Bearer ", "");
+            service.setPassword(jwt, request.getPassword());
+            return ResponseEntity.ok("Password set successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
  
 }

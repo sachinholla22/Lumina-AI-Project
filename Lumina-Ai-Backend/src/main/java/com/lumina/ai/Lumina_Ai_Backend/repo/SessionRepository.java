@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SessionRepository extends JpaRepository<Sessions, Long> {
-   Optional< Sessions> findByUserIdAndStatus(Long userid,Sessions.Status status);
+   Optional<Sessions> findByUserIdAndStatus(Long userid,Sessions.Status status);
+   // Optional<List<Sessions>> findAllByUserIdAndStatus(Long userid,Sessions.Status status);
    List<Sessions> findAllByUserIdAndStatus(Long userId, Sessions.Status status);
    Optional<List<Sessions>> findAllByUserId(Long userId);
    Optional<Sessions> findByIdAndUserId(Long id, Long userId);
