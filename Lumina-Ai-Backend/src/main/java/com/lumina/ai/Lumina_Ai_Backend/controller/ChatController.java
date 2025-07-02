@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lumina.ai.Lumina_Ai_Backend.dto.ApiResponse;
 import com.lumina.ai.Lumina_Ai_Backend.dto.ChatResponse;
 import com.lumina.ai.Lumina_Ai_Backend.service.ChatService;
 import com.lumina.ai.Lumina_Ai_Backend.util.JwtUtil;
@@ -30,26 +31,26 @@ public class ChatController{
    
 
     @DeleteMapping("/chats/{chatId}")
-    public ResponseEntity<String> deleteChat(
+    public ResponseEntity<ApiResponse<String>> deleteChat(
             @PathVariable Long chatId,
             @RequestHeader("Authorization") String authHeader) {
         String jwt = authHeader.replace("Bearer ", "");
         Long userId = Long.valueOf(jwtUtil.extractUserId(jwt));
         chatService.deleteChat(userId, chatId);
-        return ResponseEntity.ok("Chat deleted");
+        return ResponseEntity.ok(ApiResponse.success("Chat deleted"));
     }
 
     @GetMapping("/{sessionId}/chats")
-    public ResponseEntity<List<ChatResponse>> getChatsBySession(
+    public ResponseEntity<ApiResponse<List<ChatResponse>>> getChatsBySession(
             @PathVariable Long sessionId,
             @RequestHeader("Authorization") String authHeader) {
         String jwt = authHeader.replace("Bearer ", "");
         Long userId = Long.valueOf(jwtUtil.extractUserId(jwt));
-        return ResponseEntity.ok(chatService.getChatsBySessions(userId, sessionId));
+        return ResponseEntity.ok(ApiResponse.success(chatService.getChatsBySessions(userId, sessionId)));
     }
 
     @PatchMapping("/chats/{chatId}")
-    public ResponseEntity<String> updateChat(
+    public ResponseEntity<ApiResponse<String>> updateChat(
         @PathVariable Long chatId,
             @RequestBody UpdateChatRequest request,
             @RequestHeader("Authorization") String authHeader
@@ -57,7 +58,7 @@ public class ChatController{
 String jwt = authHeader.replace("Bearer ", "");
         Long userId = Long.valueOf(jwtUtil.extractUserId(jwt));
         chatService.updateChat(userId,chatId, request.getUserPrompt());
-        return ResponseEntity.ok("Chat updated");
+        return ResponseEntity.ok(ApiResponse.success("Chat updated"));
     }
 }
 

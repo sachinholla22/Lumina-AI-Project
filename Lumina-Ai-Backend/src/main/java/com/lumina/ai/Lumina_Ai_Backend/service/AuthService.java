@@ -107,7 +107,7 @@ if (user.getGoogleId() == null) {
         user.setLoginType("Google_Login");
         repo.save(user);
     }
-    sessionRepo.findByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE)
+    sessionRepo.findAllByUserIdAndStatus(user.getId(), Sessions.Status.ACTIVE)
             .forEach(session -> {
                 session.setStatus(Sessions.Status.INACTIVE);
                 sessionRepo.save(session);
