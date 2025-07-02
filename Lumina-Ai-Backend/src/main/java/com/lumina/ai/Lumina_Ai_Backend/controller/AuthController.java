@@ -1,5 +1,6 @@
 package com.lumina.ai.Lumina_Ai_Backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lumina.ai.Lumina_Ai_Backend.dto.ApiResponse;
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthResponse;
 import com.lumina.ai.Lumina_Ai_Backend.dto.SetPasswordRequest;
@@ -29,39 +31,37 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerController(@RequestBody @Valid AuthRequest request ){
+    public ResponseEntity<ApiResponse<AuthResponse>> registerController(@RequestBody @Valid AuthRequest request ){
         AuthResponse response= service.registerRequest(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
-        return ResponseEntity.ok(service.loginRequest(request));
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody @Valid AuthRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(service.loginRequest(request)));
     }
 
     @GetMapping("/google/success")
-    public ResponseEntity<AuthResponse> googleLoginSuccess(OAuth2AuthenticationToken authentication){
+    public ResponseEntity<ApiResponse<AuthResponse>> googleLoginSuccess(OAuth2AuthenticationToken authentication){
 if (!"google".equals(authentication.getAuthorizedClientRegistrationId())) {
-            return ResponseEntity.status(400).body(new AuthResponse(null, "Invalid OAuth2 provider"));
+            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"BInvalid OAuth2 provider, expected Google","INVALID_CLIENT"));
         }
-        return ResponseEntity.ok(service.handleGoogleLogin(authentication));
+        return ResponseEntity.ok(ApiResponse.success(service.handleGoogleLogin(authentication)));
     }
 
     @GetMapping("/google/failure")
-    public ResponseEntity<String> googleLoginFailure() {
-        return ResponseEntity.status(401).body("Google login failed");
+    public ResponseEntity<ApiResponse<String>> googleLoginFailure() {
+        return ResponseEntity.status(401).body(ApiResponse.error(HttpStatus.UNAUTHORIZED,"User Not Authorized","INVALID_USER"));
     }
 
 
     @PostMapping("/setpassword")
-    public ResponseEntity<String> setPassword(@RequestBody SetPasswordRequest request, @RequestHeader("Authorization")String authHead){
-        try {
+    public ResponseEntity<ApiResponse<String>> setPassword(@RequestBody SetPasswordRequest request, @RequestHeader("Authorization")String authHead){
+       
             String jwt = authHead.replace("Bearer ", "");
             service.setPassword(jwt, request.getPassword());
-            return ResponseEntity.ok("Password set successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
+            return ResponseEntity.status(201).body(ApiResponse.success("Password Set Successfully"));
+       
     }
  
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import com.lumina.ai.Lumina_Ai_Backend.dto.ApiResponse;
 import com.lumina.ai.Lumina_Ai_Backend.dto.ChatResponse;
 import com.lumina.ai.Lumina_Ai_Backend.dto.PromptRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.PromptResponse;
@@ -35,21 +36,26 @@ public class PromptController {
 
 
     @PostMapping
-    public ResponseEntity<PromptResponse> processPrompt(@RequestHeader("Authorization") String authHeader,@RequestBody String request){
+    public ResponseEntity<ApiResponse<PromptResponse>> processPrompt(@RequestHeader("Authorization") String authHeader,@RequestBody String request){
         String jwt = authHeader.replace("Bearer ", "");
         String userId = jwtUtil.extractUserId(jwt);
-      
+        if(!jwtUtil.isTokenValid(jwt)){
+            throw new IllegalArgumentException("Invalid or expired JWT");
+        }
         PromptResponse response=service.processAuthenticationPrompt(userId, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
 
     @GetMapping("/getChatHistory")
-    public ResponseEntity<List<ChatResponse>> getChatHistory(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<ApiResponse<List<ChatResponse>>> getChatHistory(@RequestHeader("Authorization") String authHeader){
         String jwt=authHeader.substring(7);
         String userId=jwtUtil.extractUserId(jwt);
+        if(!jwtUtil.isTokenValid(jwt)){
+            throw new IllegalArgumentException("Invalid or expired JWT");
+        }
         Optional <List<ChatResponse>>history=chatService.getChatHistory(userId);
-        return ResponseEntity.ok(history.orElse(Collections.emptyList()));
+        return ResponseEntity.ok(ApiResponse.success(history.orElse(Collections.emptyList())));
     }
     
 }

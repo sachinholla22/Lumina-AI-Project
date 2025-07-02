@@ -36,8 +36,8 @@ this.template=template;
         throw new IllegalArgumentException("Prompt cannot be Empty");
     }
 
-    Sessions session=sessionRepo.findByUserIdAndStatus(Long.valueOf(userId),Sessions.Status.ACTIVE).orElse(null);
-                   // .orElseThrow(()->new IllegalArgumentException("No Active Session Found"));
+    Sessions session=sessionRepo.findByUserIdAndStatus(Long.valueOf(userId),Sessions.Status.ACTIVE)
+                   .orElseThrow(()->new IllegalArgumentException("No Active Session Found"));
 
     HttpHeaders header=new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_JSON);   
@@ -52,7 +52,7 @@ this.template=template;
 
     Chats chat=new Chats();
     chat.setSession(session);
-    chat.setInput(request.getInput());
+    chat.setInput(input);
     chat.setResponse(response.getResponse());
     chatRepo.save(chat);
 
