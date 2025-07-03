@@ -1,10 +1,14 @@
 package com.lumina.ai.Lumina_Ai_Backend.service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +26,8 @@ public class PromptService {
     private final ChatRepository chatRepo;
     private final SessionRepository sessionRepo;
     private final RestTemplate template;
+    private static final int SESSION_EXPIRY_HOURS=24;
+
 
     public String aiUrl="http://localhost:5000/q";
 
@@ -38,6 +44,12 @@ this.template=template;
 
     Sessions session=sessionRepo.findByUserIdAndStatus(Long.valueOf(userId),Sessions.Status.ACTIVE)
                    .orElseThrow(()->new IllegalArgumentException("No Active Session Found"));
+
+    if(session.getCreatedAt().isBefore(LocalDateTime.now().minus(SESSION_EXPIRY_HOURS, ChronoUnit.HOURS))){
+        session.setStatus(Sessions.Status.INACTIVE);
+        sessionRepo.save(session);
+        throw new IllegalArgumentException("Session has expired");
+    }            
 
     HttpHeaders header=new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_JSON);   
