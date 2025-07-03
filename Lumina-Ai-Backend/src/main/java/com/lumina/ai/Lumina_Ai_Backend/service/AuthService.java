@@ -78,6 +78,7 @@ public class AuthService {
         session.setUser(user);
         session.setSessionName("Session_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")));
         session.setStatus(Sessions.Status.ACTIVE);
+        session.setCreatedAt(LocalDateTime.now());
         sessionRepo.save(session);
         String jwt = jwtutil.generateToken(user.getId().toString());
         return new AuthResponse(jwt, user.getId().toString());
@@ -117,6 +118,7 @@ if (user.getGoogleId() == null) {
         session.setUser(user);   
         session.setSessionName("Google_Login_"+LocalDateTime.now());
         session.setStatus(Sessions.Status.ACTIVE);
+        session.setCreatedAt(LocalDateTime.now());
         sessionRepo.save(session);
 
 
