@@ -36,10 +36,12 @@ public class Chats {
     private Sessions session;
 
     
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT",nullable=false)
     private String response;
 
     private boolean isResearchRelated;
+    
+    private String instruction;
     
     @Column(name="created_at",nullable=false)
     private LocalDateTime createdAt=LocalDateTime.now();
