@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lumina.ai.Lumina_Ai_Backend.dto.ApiResponse;
+import com.lumina.ai.Lumina_Ai_Backend.dto.AudioRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.PromptResponse;
 import com.lumina.ai.Lumina_Ai_Backend.service.AudioService;
 
@@ -28,12 +29,15 @@ public class AudioController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PromptResponse>> processAudioPrompt(@RequestHeader("Authorization") String header,@RequestPart("audioFile") MultipartFile audioFile){
+    public ResponseEntity<ApiResponse<PromptResponse>> processAudioPrompt(@RequestHeader("Authorization") String header,@RequestPart("audioFile") MultipartFile audioFile,@RequestPart("instruction") String instruction){
         if (!rateLimitBucket.tryConsume(1)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(ApiResponse.error(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded", "RATE_LIMIT_EXCEEDED"));
         }
         String jwt = header.replace("Bearer ", "");
-        return ResponseEntity.ok(audioService.processAudioPrompt(jwt, audioFile));
+        AudioRequest request = new AudioRequest();
+        request.setAudioFile(audioFile);
+        request.setInstruction(instruction);
+        return ResponseEntity.ok(audioService.processAudioPrompt(jwt, request));
     }
 }

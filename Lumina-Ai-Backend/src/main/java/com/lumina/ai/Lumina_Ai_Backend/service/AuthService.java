@@ -131,7 +131,7 @@ if (user.getGoogleId() == null) {
     @Transactional
     public void setPassword(String jwt,String password){
      Long userId = Long.valueOf(jwtutil.extractUserId(jwt));
-        String email = jwtutil.extractEmail(jwt).toLowerCase();
+
 
         Users user = repo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
