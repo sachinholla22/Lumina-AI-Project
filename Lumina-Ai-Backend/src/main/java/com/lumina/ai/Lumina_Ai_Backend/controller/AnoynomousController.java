@@ -24,7 +24,7 @@ public class AnoynomousController {
     
     private final AnonymousService service;
     private final Bucket rateLimit;
-     private static final Pattern INPUT_PATTERN=Pattern.compile("^[a-zA-Z0-9\\\\s.,!?']{1,500}$");
+
 
     public AnoynomousController(AnonymousService service, Bucket rateLimit){
 this.service=service;
@@ -36,9 +36,7 @@ this.rateLimit=rateLimit;
         if(!rateLimit.tryConsume(1)){
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ApiResponse.error(HttpStatus.TOO_MANY_REQUESTS,"Rate Limit Exceeded","RATE_LIMIT_EXCEEDED"));
         }
-         if (!INPUT_PATTERN.matcher(request.getInput()).matches()) {
-            throw new IllegalArgumentException("Input contains invalid characters or exceeds 500 characters");
-        }
+      
         PromptResponse response=service.processAnoynomousRequest(request.getInput());
         return ResponseEntity.ok(ApiResponse.success(response));
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.lumina.ai.Lumina_Ai_Backend.Exception.ResourceNotFoundException;
@@ -34,7 +35,8 @@ public class ChatService {
                 .collect(Collectors.toList()));
     }
 
-
+   
+    @Cacheable(value="chats", key="#userId + '-' + #sessionId ")
     @Transactional(readOnly=true)
     public List<ChatResponse> getChatsBySessions(Long userId,Long sessionId){
     sessionRepo.findByIdAndUserId(sessionId,userId).orElseThrow(()->new IllegalArgumentException("No session available"));

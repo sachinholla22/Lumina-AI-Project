@@ -69,10 +69,14 @@ this.template=template;
     chatRepo.save(chat);
 
  return new PromptResponse(
+   
+   
     request.getInput(),
     response.getResponse(),
     response.getTimestamp(),
     response.getFeedback(),
+     chat.getId(),
+      session.getId(),
     response.isResearchRelated()
  );
 

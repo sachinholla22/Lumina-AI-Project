@@ -1,5 +1,6 @@
 package com.lumina.ai.Lumina_Ai_Backend.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatResponse {
+public class ChatResponse implements Serializable {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

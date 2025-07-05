@@ -6,6 +6,8 @@ import com.lumina.ai.Lumina_Ai_Backend.entity.Users;
 import com.lumina.ai.Lumina_Ai_Backend.repo.SessionRepository;
 import com.lumina.ai.Lumina_Ai_Backend.repo.UserRepository;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -42,6 +44,7 @@ for (Sessions session : activeSessions) {
         return sessionRepo.save(session);          
     }
 
+    @Cacheable(value="sessions", key="#userId+ '-' + #sessionId")
 @Transactional(readOnly = true)
     public Optional<List<SessionResponse>> getSessionHistoryDetails(String userId) {
         try {

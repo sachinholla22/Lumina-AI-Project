@@ -32,7 +32,6 @@ public class PromptController {
     private final JwtUtil jwtUtil;
     private final ChatService chatService;
     private final Bucket rateLimit;
-    private static final Pattern INPUT_PATTERN=Pattern.compile("^[a-zA-Z0-9\\\\s.,!?']{1,500}$");
 
     public PromptController(PromptService promptService, JwtUtil jwtUtil,ChatService chatService, Bucket rateLimit) {
         this.service = promptService;
@@ -49,9 +48,7 @@ public class PromptController {
         if(!jwtUtil.isTokenValid(jwt)){
             throw new IllegalArgumentException("Invalid or expired JWT");
         }
-        if (!INPUT_PATTERN.matcher(request).matches()) {
-            throw new IllegalArgumentException("Input contains invalid characters or exceeds 500 characters");
-        }
+      
        if(!rateLimit.tryConsume(1)){
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ApiResponse.error(HttpStatus.TOO_MANY_REQUESTS,"Rate Limit Exceeded","RATE_LIMIT_EXCEEDED"));
         }

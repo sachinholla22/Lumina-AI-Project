@@ -1,11 +1,13 @@
 package com.lumina.ai.Lumina_Ai_Backend.dto;
 
+import java.io.Serializable;
+
 import org.springframework.http.HttpStatus;
 
 import lombok.Data;
 
 @Data
-public class ApiResponse<T> {
+public class ApiResponse<T> implements Serializable {
     
     private boolean success;
     private T data;

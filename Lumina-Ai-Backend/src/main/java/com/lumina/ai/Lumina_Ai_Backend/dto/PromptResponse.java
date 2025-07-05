@@ -18,5 +18,7 @@ public class PromptResponse {
     private String response;
     private LocalDateTime timestamp;
     private String feedback;
+    private Long chatId;
+    private Long sessionId;
     private boolean isResearchRelated;
 }
