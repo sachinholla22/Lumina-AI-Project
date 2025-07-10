@@ -25,6 +25,7 @@ public class AnonymousService {
             throw new IllegalArgumentException("Prompt Cannot be empty");
         }
         PromptRequest request=new PromptRequest();
+        request.setId(Math.random());
         request.setInput(prompt);
         PromptResponse response=restTemplate.postForObject(aiServiceUrl,request,PromptResponse.class);
         return response;

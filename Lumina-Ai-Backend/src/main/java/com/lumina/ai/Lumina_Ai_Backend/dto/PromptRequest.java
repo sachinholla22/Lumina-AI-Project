@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class PromptRequest {
+    private Long id;
     private String input;
 }

@@ -55,6 +55,7 @@ this.template=template;
     header.setContentType(MediaType.APPLICATION_JSON);   
     
     PromptRequest request=new PromptRequest();
+    request.setId(Long.valueOf(userId));
     request.setInput(input);
 
     HttpEntity<PromptRequest>entity=new HttpEntity<>(request,header);
