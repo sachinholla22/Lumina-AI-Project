@@ -51,7 +51,7 @@ public class OcrService {
 
     @Transactional
     public ApiResponse<PromptResponse> processOcrRequest(String jwt, OcrRequest request){
-        if (imageFile == null || imageFile.isEmpty()) {
+        if (request == null ) {
             throw new IllegalArgumentException("Image file cannot be empty");
         }
         if(!jwtUtil.isTokenValid(jwt)){

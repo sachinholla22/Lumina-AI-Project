@@ -6,11 +6,13 @@ import java.time.temporal.ChronoUnit;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import com.lumina.ai.Lumina_Ai_Backend.dto.AuthRequest;
 import com.lumina.ai.Lumina_Ai_Backend.dto.PromptRequest;
@@ -37,7 +39,8 @@ this.sessionRepo=sessionRepo;
 this.template=template;
     }
 
-    public PromptResponse processAuthenticationPrompt( String userId,String input){
+    @Async("taskExecutor")
+    public CompletableFuture<PromptResponse> processAuthenticationPrompt( String userId,String input){
     if(input==null||input.trim().isEmpty()){
         throw new IllegalArgumentException("Prompt cannot be Empty");
     }
@@ -68,7 +71,7 @@ this.template=template;
     chat.setResponse(response.getResponse());
     chatRepo.save(chat);
 
- return new PromptResponse(
+ return CompletableFuture.completedFuture(new PromptResponse(
    
    
     request.getInput(),
@@ -78,7 +81,7 @@ this.template=template;
      chat.getId(),
       session.getId(),
     response.isResearchRelated()
- );
+ ));
 
     }
 }
