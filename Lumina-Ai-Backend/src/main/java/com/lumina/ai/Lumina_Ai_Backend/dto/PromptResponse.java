@@ -21,6 +21,8 @@ public class PromptResponse {
     private String feedback;
     private Long chatId;
     private Long sessionId;
+     private String sessionTitle;
     @JsonProperty("isResearchRelated")
     private boolean isResearchRelated;
+   
 }

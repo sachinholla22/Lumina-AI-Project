@@ -69,6 +69,10 @@ this.template=template;
     chat.setResponse(response.getResponse());
     chatRepo.save(chat);
 
+    if(session.getSessionName().startsWith("Google_Login_") || session.getSessionName().startsWith("Session_")|| session.getSessionName().startsWith("New Chat ")){
+     session.setSessionName(response.getSessionTitle() != null ? response.getSessionTitle() : "Untitled_Session");
+    sessionRepo.save(session);
+    }
  return new PromptResponse(
    
    
@@ -78,7 +82,9 @@ this.template=template;
     response.getFeedback(),
      chat.getId(),
       session.getId(),
+      response.getSessionTitle(),
     response.isResearchRelated()
+
  );
 
     }
