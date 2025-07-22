@@ -43,7 +43,7 @@ public class AudioService {
         this.jwtUtil = jwtUtil;
     }
     public ApiResponse<PromptResponse> processAudioPrompt(String jwt,AudioRequest request){
-        if(audioFile==null|| audioFile.isEmpty()) {
+        if(request==null) {
             throw new IllegalArgumentException("Audio file cannot be empty");
         }
         if (!jwtUtil.isTokenValid(jwt)) {
@@ -62,7 +62,7 @@ public class AudioService {
         MultiValueMap<String,Object> map=new LinkedMultiValueMap<>();
         try {
            map.add("audioFile",new HttpEntity<>(request.getAudioFile().getBytes()));
-           body.add("instruction", request.getInstruction());
+           map.add("instruction", request.getInstruction());
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to read audio file: " + e.getMessage());
         }
