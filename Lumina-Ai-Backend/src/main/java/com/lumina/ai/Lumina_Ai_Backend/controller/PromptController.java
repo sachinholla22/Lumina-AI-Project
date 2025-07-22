@@ -59,7 +59,7 @@ public class PromptController {
         }
        try {
             emitter.send(SseEmitter.event().name("status").data("Processing..."));
-            service.processAuthenticationPrompt(userId, request.getInput())
+            service.processAuthenticationPrompt(userId, request)
                 .thenAccept(response -> {
                     try {
                         emitter.send(SseEmitter.event().name("response").data(ApiResponse.success(response)));

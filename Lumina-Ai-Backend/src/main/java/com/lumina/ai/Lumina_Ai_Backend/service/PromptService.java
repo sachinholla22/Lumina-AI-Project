@@ -64,7 +64,7 @@ this.template=template;
     HttpEntity<PromptRequest>entity=new HttpEntity<>(request,header);
 
     PromptResponse response=template.postForObject(aiUrl,entity,PromptResponse.class);
-
+ response.setTimestamp(LocalDateTime.now());
 
     Chats chat=new Chats();
     chat.setSession(session);
