@@ -42,7 +42,7 @@ The Lumina AI Backend is engineered to handle user sessions, authentication, and
 - Java 17+
 - Maven
 - Git
-- Supabase account with PostgreSQL instance
+- Docker (for running Redis or containerized app)  
 
 ### Steps
 1. **Clone the Repository**
