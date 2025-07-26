@@ -64,7 +64,7 @@ public class OcrService {
         Sessions session=activeSessions.orElseThrow(()-> new IllegalArgumentException("Invalid session"));
 
         if(session.getCreatedAt().isBefore(LocalDateTime.now().minus(SESSION_EXPIRY_HOURS, ChronoUnit.HOURS))){
-            session.setState(Sessions.Status.INACTIVE);
+            session.setStatus(Sessions.Status.INACTIVE);
             sessionRepo.save(session);
             throw new IllegalArgumentException("Session has expired");
         }
